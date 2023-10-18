@@ -1,0 +1,138 @@
+/posição e tamanho da bolinha
+let xbolinha = 300;
+let ybolinha = 200;
+let diametro = 25;
+let raio = diametro / 2;
+let imagem1;
+
+//velocidade da bolinha
+let velocidadexbolinha = 4;
+let velocidadeybolinha = 4;
+
+//velocidade da raquete
+let xraquete = 5;
+let yraquete = 150;
+let raquetecomprimento = 10;
+let raquetealtura = 90;
+
+//variaveis da raquete oponente
+let xraqueteoponente = 585;
+let yraqueteoponente = 150;
+let velocidadeyoponente;
+let colidiu = false;
+
+//Pontuação
+let meuspontos = 0;
+let pontosoponente = 0; 
+
+function setup() {
+  createCanvas(600, 400);
+  imagem1 = loadImage("mesa.jpg");
+}
+
+function draw() {
+  background(imagem1);
+  mostrabolinha();
+  movimentabolinha();
+  verificacolisaoborda();
+  mostraraquete();
+  movimentaraquete();
+  verificacolisaoraquete();
+  mostraraqueteoponente();
+  movimentaraqueteoponente();
+  incluirplacar();
+  marcapontos();
+  verificacolisaoraqueteoponente();
+}
+
+function mostrabolinha() {
+  fill("purple");
+  circle(xbolinha, ybolinha, diametro);
+}
+
+function movimentabolinha() {
+  xbolinha += velocidadexbolinha;
+  ybolinha += velocidadeybolinha;
+}
+
+function verificacolisaoborda() {
+  if (xbolinha > width || xbolinha < 0) {
+    velocidadexbolinha *= -1;
+  }
+  if (ybolinha > height || ybolinha < 0) {
+    velocidadeybolinha *= -1;
+  }
+}
+
+function mostraraquete() {
+  fill("white");
+  rect(xraquete, yraquete, raquetecomprimento, raquetealtura, 15);
+}
+
+function movimentaraquete() {
+  if (keyIsDown(UP_ARROW)) {
+    yraquete -= 10;
+  }
+  if (keyIsDown(DOWN_ARROW)) {
+    yraquete += 10;
+  }
+}
+
+function verificacolisaoraquete() {
+  if (
+    xbolinha - raio < xraquete + raquetecomprimento &&
+    ybolinha - raio < yraquete + raquetealtura &&
+    ybolinha + raio > yraquete
+  ) {
+    velocidadexbolinha *= -1;
+  }
+}
+function mostraraqueteoponente() {
+  fill("white");
+  rect(
+    xraqueteoponente,
+    yraqueteoponente,
+    raquetecomprimento,
+    raquetealtura,
+    15
+  );
+}
+function movimentaraqueteoponente() {
+  velocidadeyoponente = ybolinha - yraqueteoponente - raquetealtura / 2;
+
+  yraqueteoponente += velocidadeyoponente;
+}
+
+function verificacolisaoraqueteoponente() {
+  colidiu = collideRectCircle(
+    xraqueteoponente,
+    yraqueteoponente,
+    raquetealtura,
+    xbolinha,
+    ybolinha,
+    raio
+  );
+  if (colidiu == true) {
+    velocidadexbolinha *= -1;
+  }
+}
+
+function incluirplacar(){
+  fill(255);
+  stroke("#FF5722");
+         text("Eu:" + meuspontos,250,30);
+  text("Op" + pontosoponente, 350, 30);
+}
+
+function marcapontos() {
+  if(xbolinha > 590){
+    meuspontos += 1;
+    xbolinha= 300;
+      ybolinha= 200;
+  }
+  if(xbolinha < 10) {
+    pontosoponente += 1;
+    xbolinha= 300;
+      ybolinha= 200;
+}
+}
